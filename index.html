@@ -19,17 +19,71 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--cream);
+    background: #2a1f0e;
     color: var(--ink);
     font-family: 'Libre Baskerville', Georgia, serif;
     font-size: 16px;
     line-height: 1.7;
     overflow-x: hidden;
   }
+
+  /* ─── NEWSPAPER FOLD ANIMATION ─── */
+  #newspaper-wrapper {
+    perspective: 2200px;
+    perspective-origin: 50% 40%;
+  }
+
+  #newspaper-page {
+    background: var(--cream);
+    transform-origin: top center;
+    animation: unfoldNewspaper 1.6s cubic-bezier(0.23, 1, 0.32, 1) 0.3s both;
+    transform-style: preserve-3d;
+  }
+
+  @keyframes unfoldNewspaper {
+    0% {
+      transform: rotateX(-90deg) scaleY(0.4);
+      opacity: 0;
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+    40% {
+      opacity: 1;
+    }
+    70% {
+      transform: rotateX(4deg) scaleY(1.01);
+      box-shadow: 0 60px 120px rgba(0,0,0,0.5);
+    }
+    85% {
+      transform: rotateX(-1.5deg) scaleY(1);
+    }
+    100% {
+      transform: rotateX(0deg) scaleY(1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+  }
+
+  /* Fold crease overlay — fades out */
+  #newspaper-page::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.18), transparent);
+    animation: creasefade 2.2s ease forwards;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  @keyframes creaseface {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes creaseface { to { opacity: 0; } }
+  @keyframes creasefade { 0% { opacity: 1; } 100% { opacity: 0; } }
 
   /* ─── NOISE TEXTURE OVERLAY ─── */
   body::before {
@@ -104,9 +158,7 @@
     border-bottom: 2px solid var(--rule);
   }
 
-  .hero-kicker {
-    padding-right: 2rem;
-  }
+  .hero-kicker { padding-right: 2rem; }
 
   .kicker-label {
     font-family: 'Source Sans 3', sans-serif;
@@ -223,11 +275,7 @@
 
   .card:last-child { border-right: none; }
 
-  .card:hover {
-    background: var(--ink);
-    color: var(--cream);
-  }
-
+  .card:hover { background: var(--ink); color: var(--cream); }
   .card:hover .card-number,
   .card:hover .card-term { color: var(--cream-dark); }
   .card:hover .card-body { color: #d4c9b0; }
@@ -308,10 +356,7 @@
     margin-top: 1rem;
   }
 
-  .phase-label {
-    text-align: center;
-    flex: 1;
-  }
+  .phase-label { text-align: center; flex: 1; }
 
   .phase-label-text {
     font-family: 'Source Sans 3', sans-serif;
@@ -337,9 +382,7 @@
     gap: 0;
   }
 
-  .ba-col {
-    padding: 1.8rem 1.6rem;
-  }
+  .ba-col { padding: 1.8rem 1.6rem; }
 
   .ba-col:first-child {
     border-right: 2px solid var(--rule);
@@ -492,8 +535,6 @@
     flex-shrink: 0;
   }
 
-  .sol-header-text {}
-
   .sol-eyebrow {
     font-family: 'Source Sans 3', sans-serif;
     font-size: 0.6rem;
@@ -595,11 +636,7 @@
     margin-bottom: 0.4rem;
   }
 
-  .sol-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
+  .sol-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
   .sol-tag {
     font-family: 'Source Sans 3', sans-serif;
@@ -611,11 +648,6 @@
     border-radius: 2px;
     background: var(--ink);
     color: var(--cream-dark);
-  }
-
-  @media (max-width: 700px) {
-    .sol-body { grid-template-columns: 1fr; }
-    .sol-main { border-right: none; border-bottom: 2px solid var(--rule); }
   }
 
   /* ─── REAL WORLD SECTION ─── */
@@ -666,17 +698,9 @@
     gap: 0;
   }
 
-  .rw-col {
-    padding: 1.8rem 1.6rem;
-  }
-
-  .rw-col:last-child {
-    background: var(--cream-dark);
-  }
-
-  .rw-divider {
-    background: var(--rule);
-  }
+  .rw-col { padding: 1.8rem 1.6rem; }
+  .rw-col:last-child { background: var(--cream-dark); }
+  .rw-divider { background: var(--rule); }
 
   .rw-label {
     font-family: 'Source Sans 3', sans-serif;
@@ -717,12 +741,7 @@
     line-height: 1.55;
   }
 
-  .rw-tag-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-top: 1rem;
-  }
+  .rw-tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
 
   .rw-tag {
     font-family: 'Source Sans 3', sans-serif;
@@ -763,34 +782,17 @@
     transition: opacity 0.65s ease, transform 0.65s ease;
   }
 
-  .reveal.visible {
-    opacity: 1;
-    transform: none;
-  }
-
+  .reveal.visible { opacity: 1; transform: none; }
   .reveal-delay-1 { transition-delay: 0.1s; }
   .reveal-delay-2 { transition-delay: 0.2s; }
   .reveal-delay-3 { transition-delay: 0.3s; }
   .reveal-delay-4 { transition-delay: 0.4s; }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 700px) {
-    .hero { grid-template-columns: 1fr; }
-    .col-rule { display: none; }
-    .hero-kicker { padding-right: 0; margin-bottom: 1.5rem; }
-    .cards-grid { grid-template-columns: 1fr 1fr; }
-    .card { border-bottom: 2px solid var(--rule); }
-    .before-after { grid-template-columns: 1fr; }
-    .ba-col:first-child { border-right: none; border-bottom: 2px solid var(--rule); }
-    .implications-grid { grid-template-columns: 1fr; }
-    .realworld-body { grid-template-columns: 1fr; }
-    .rw-divider { display: none; }
-    .edition-line span:first-child,
-    .edition-line span:last-child { display: none; }
-  }
 </style>
 </head>
 <body>
+
+<div id="newspaper-wrapper">
+<div id="newspaper-page" style="position:relative;">
 
 <!-- ─── MASTHEAD ─── -->
 <header class="masthead">
@@ -809,18 +811,18 @@
   <div class="hero-kicker">
     <span class="kicker-label">By the numbers</span>
     <div class="kicker-stat">3</div>
-    <div class="kicker-desc">Distinct phases of organisational change</div>
+    <div class="kicker-desc">Phases of organisational change</div>
     <hr class="kicker-divider"/>
     <div class="kicker-stat">4</div>
     <div class="kicker-desc">Core economic concepts at play</div>
     <hr class="kicker-divider"/>
     <div class="kicker-stat" style="color:var(--accent)">↑↓</div>
-    <div class="kicker-desc">Productivity went up. Then cooperation fell apart.</div>
+    <div class="kicker-desc">Productivity up. Cooperation down.</div>
   </div>
   <div class="col-rule"></div>
   <div class="hero-lead">
     <h2>A government agency rewarded individual output. Output went up. Then everything else went down.</h2>
-    <p class="drop-cap">A public-sector org rolled out performance-based pay. It worked at first. Then people stopped helping each other, started hoarding info, and morale tanked. Turns out money isn't the whole story — people also care about fairness, colleagues, and whether their work actually means something.</p>
+    <p class="drop-cap">Performance-based pay worked at first. Then people stopped helping each other, hoarded information, and morale collapsed. Money isn't the whole story — fairness, colleagues, and meaningful work matter too.</p>
   </div>
 </div>
 
@@ -834,25 +836,25 @@
     <div class="card">
       <span class="card-number">01 · Economics</span>
       <div class="card-term">Principal-Agent Theory</div>
-      <p class="card-body">Bosses and employees want different things. Financial incentives try to bridge that gap. On paper, clean and logical. In practice, complicated fast.</p>
+      <p class="card-body">Bosses and employees want different things. Financial incentives try to bridge that gap — clean in theory, complicated in practice.</p>
       <span class="card-tag">Traditional Economics</span>
     </div>
     <div class="card">
       <span class="card-number">02 · Psychology</span>
       <div class="card-term">The Crowding-Out Effect</div>
-      <p class="card-body">Big external rewards can kill internal ones. Once people work just for the bonus, they stop working because they care. Loyalty and teamwork quietly disappear.</p>
+      <p class="card-body">Big external rewards can kill internal motivation. Once people work only for the bonus, loyalty and teamwork quietly disappear.</p>
       <span class="card-tag">Behavioural Economics</span>
     </div>
     <div class="card">
       <span class="card-number">03 · Sociology</span>
       <div class="card-term">Social Preferences</div>
-      <p class="card-body">People aren't just walking calculators. Fairness, belonging, and wanting to help a teammate are real motivators. Team bonuses tap into that rather than making colleagues compete.</p>
+      <p class="card-body">People aren't just calculators. Fairness, belonging, and helping a teammate are real motivators — team bonuses tap into that instead of creating rivals.</p>
       <span class="card-tag">Behavioural Economics</span>
     </div>
     <div class="card">
       <span class="card-number">04 · Design</span>
-      <div class="card-term">Choice Architecture and Nudging</div>
-      <p class="card-body">How you present a choice changes what people pick. Enrolling employees in training by default (opt-out, not opt-in) quietly boosts participation without forcing anyone.</p>
+      <div class="card-term">Choice Architecture</div>
+      <p class="card-body">How you present a choice changes what people pick. Enrolling staff in training by default (opt-out, not opt-in) quietly boosts participation without mandates.</p>
       <span class="card-tag">Thaler and Sunstein</span>
     </div>
   </div>
@@ -866,7 +868,7 @@
   </div>
   <div class="chart-wrapper">
     <div class="chart-headline">Productivity, Cooperation and Morale Over Time</div>
-    <div class="chart-deck">A rough picture of how things played out across three policy phases. Hover over the lines to see details.</div>
+    <div class="chart-deck">How things played out across three policy phases. Hover over the lines for details.</div>
     <div class="chart-container">
       <canvas id="mainChart"></canvas>
     </div>
@@ -895,23 +897,23 @@
   </div>
   <div class="before-after">
     <div class="ba-col before">
-      <div class="ba-label before">Before · The Individual Pay Model</div>
+      <div class="ba-label before">Before · Individual Pay Model</div>
       <div class="ba-title">How the Competitive Trap Set In</div>
       <ul class="ba-list before">
         <li>Rewards tied solely to individual output</li>
-        <li>Sharing info with colleagues just helped your competition</li>
-        <li>The joy of good work got replaced by chasing the payout</li>
-        <li>Trust eroded, and that's really hard to get back</li>
+        <li>Sharing info just helped your competition</li>
+        <li>The joy of good work got replaced by chasing bonuses</li>
+        <li>Trust eroded — and that's hard to get back</li>
       </ul>
     </div>
     <div class="ba-col after">
-      <div class="ba-label after">After · The Behavioural Intervention</div>
+      <div class="ba-label after">After · The Behavioural Fix</div>
       <div class="ba-title">How Things Got Back on Track</div>
       <ul class="ba-list after">
-        <li>Team bonuses made your win and your colleague's win the same thing</li>
-        <li>People started looking out for each other again, naturally</li>
-        <li>Training was the default, so most people just did it</li>
-        <li>Morale crept back as the workplace felt worth caring about again</li>
+        <li>Team bonuses made your win and your colleague's win the same</li>
+        <li>People started looking out for each other again</li>
+        <li>Training as default meant most people just did it</li>
+        <li>Morale recovered as the workplace felt worth caring about</li>
       </ul>
     </div>
   </div>
@@ -926,11 +928,11 @@
   <div class="implications-grid">
     <div class="impl-block">
       <h3>People's Wellbeing</h3>
-      <p>Systems that only track output slowly eat away at the parts of work that make it worth doing. When trust goes, you get turnover, sick days, and work that technically gets done but stops being any good.</p>
+      <p>Systems that only track output slowly eat away at what makes work meaningful. When trust goes, you get turnover, sick days, and work that technically gets done but stops being any good.</p>
     </div>
     <div class="impl-block">
       <h3>Governance</h3>
-      <p>Nudge tools like smart defaults can improve both efficiency and wellbeing at once. And unlike mandates, they don't take away anyone's freedom to choose differently, which makes them easier to defend.</p>
+      <p>Nudge tools like smart defaults improve both efficiency and wellbeing at once — and unlike mandates, they preserve freedom of choice, which makes them easier to defend politically.</p>
     </div>
     <div class="pull-quote">
       <p>"The question is never whether to architect the choice environment. It already is. The question is whether to do it thoughtfully."</p>
@@ -938,11 +940,11 @@
     </div>
     <div class="impl-block">
       <h3>People Don't Think Like Economists</h3>
-      <p>Most employees go with the default, copy colleagues, and follow their gut. Designing systems that assume everyone is a perfectly rational agent will keep producing surprises.</p>
+      <p>Most employees follow defaults, copy colleagues, and act on instinct. Designing systems that assume perfectly rational agents will keep producing surprises.</p>
     </div>
     <div class="impl-block">
-      <h3>The Best Approach Uses Both</h3>
-      <p>Financial incentives plus behavioural design. Clear structures give direction; smart defaults make cooperation the easier option. The goal isn't to trick anyone. It's just to make the good choice easy.</p>
+      <h3>Use Both Tools Together</h3>
+      <p>Financial incentives plus behavioural design. Clear structures give direction; smart defaults make cooperation the easier option. The goal is to make the good choice easy, not to trick anyone.</p>
     </div>
   </div>
 </section>
@@ -965,10 +967,10 @@
       <div class="rw-col">
         <span class="rw-label">What went wrong</span>
         <div class="rw-heading">The system that turned teammates into rivals</div>
-        <p class="rw-body">For over a decade, Microsoft ran a "stack ranking" system. Every team had to rank its members on a bell curve: top 20%, middle 70%, bottom 10%. The bottom group faced demotion or firing, regardless of their actual performance. Sounds rigorous, right?</p>
-        <p class="rw-body">It was a disaster. Since only a fixed number of people could be top-ranked, working alongside a talented colleague became a threat, not an asset. People started hoarding information and avoiding high-performers so they wouldn't look worse by comparison.</p>
+        <p class="rw-body">For over a decade, Microsoft ranked every team on a forced bell curve: top 20%, middle 70%, bottom 10%. The bottom group faced demotion or firing — regardless of actual performance.</p>
+        <p class="rw-body">Since only a fixed number could be top-ranked, working alongside a talented colleague became a threat. People hoarded information and avoided high-performers so they wouldn't look worse by comparison.</p>
         <div class="rw-quote">
-          "People responsible for features will openly sabotage other people's efforts. One of the most valuable things I learned was to give the appearance of being courteous while withholding just enough information from colleagues to ensure they didn't get ahead of me."
+          "People responsible for features will openly sabotage other people's efforts. I learned to give the appearance of being courteous while withholding just enough to ensure colleagues didn't get ahead of me."
           <br/><small>Former Microsoft developer, Vanity Fair</small>
         </div>
         <div class="rw-tag-row">
@@ -981,9 +983,9 @@
       <div class="rw-col">
         <span class="rw-label green">What they did about it</span>
         <div class="rw-heading">Satya Nadella scrapped it and built something very different</div>
-        <p class="rw-body">In 2013, Microsoft abolished stack ranking entirely. Under new CEO Satya Nadella, the company shifted to continuous feedback, team-based goals, and a culture built around a "growth mindset." No more forced curves, no more rank-and-yank.</p>
-        <p class="rw-body">The turnaround is remarkable. Employee satisfaction jumped from a Glassdoor score of 3.7 in 2013 to 4.4 by 2023. Microsoft Azure became a cloud giant. Innovation returned. The company went from a "lost decade" to a multi-trillion dollar resurgence.</p>
-        <p class="rw-body">It's a near-perfect real-world version of the case study: individual incentives crushed cooperation, and switching to collaborative structures brought it back.</p>
+        <p class="rw-body">In 2013, Microsoft abolished stack ranking. Under Nadella, the company shifted to continuous feedback, team-based goals, and a culture built around a "growth mindset." No more forced curves.</p>
+        <p class="rw-body">Employee satisfaction jumped from a Glassdoor score of 3.7 in 2013 to 4.4 by 2023. Azure became a cloud giant. The company went from a "lost decade" to a multi-trillion dollar resurgence.</p>
+        <p class="rw-body">A near-perfect real-world mirror of the case study: individual incentives crushed cooperation, and switching to collaborative structures brought it back.</p>
         <div class="rw-tag-row">
           <span class="rw-tag">Team-Based Goals</span>
           <span class="rw-tag">Continuous Feedback</span>
@@ -1000,7 +1002,7 @@
     <span class="section-number">§ VI · Proposed Solutions</span>
     <h2 class="section-title">Two Ideas That Could Actually Fix This</h2>
   </div>
-  <p class="solution-intro">So now we know what goes wrong and why. The real question is: what do you actually do about it? Here are two practical solutions that go beyond tweaking the bonus structure and address the root problem — that people need to feel like they're part of something, not just competing within it.</p>
+  <p class="solution-intro">Now we know what goes wrong and why. The real question: what do you actually do about it? These two solutions go beyond tweaking bonuses and address the root problem — people need to feel part of something, not competing within it.</p>
 
   <!-- SOLUTION 1: GAMIFICATION -->
   <div class="solution-block">
@@ -1013,20 +1015,19 @@
     </div>
     <div class="sol-body">
       <div class="sol-main">
-        <p>The idea here is simple: take the things that make games fun — points, levels, challenges, team quests — and wire them into how everyday work gets recognised. Not to make work feel like a video game, but to make effort visible, collaboration rewarded, and progress something people can actually see and feel.</p>
-        <p>In a traditional incentive system, if you quietly help a colleague solve a problem, nobody tracks that. It doesn't show up in your review. In a game-based system, it does. You earn points for sharing knowledge, mentoring a new joiner, or finishing a cross-team project. Teams accumulate points together and unlock shared rewards — an extra day off, a team lunch, priority on new projects.</p>
-        <p>The key difference from regular bonuses is that the rewards are transparent, frequent, and tied to behaviours the organisation actually wants — not just the output that's easiest to measure. It also taps into something behavioural economics knows well: people respond to immediate, visible feedback far more than to an annual review that feels abstract and far away.</p>
-        <p>Crucially, the scoring system is designed around team contributions, not individual rankings. There's no bell curve. Nobody loses points because a colleague did well. The game is designed to be cooperative by default, which is exactly the kind of choice architecture Thaler and Sunstein would approve of.</p>
+        <p>Take what makes games fun — points, levels, team quests — and wire them into how everyday work gets recognised. Not to make work feel like a video game, but to make effort visible, collaboration rewarded, and progress something people can actually see.</p>
+        <p>In a traditional system, quietly helping a colleague doesn't show up in your review. In a game-based system, it does. You earn points for sharing knowledge, mentoring, or finishing a cross-team project. Teams accumulate points together and unlock shared rewards.</p>
+        <p>The rewards are transparent, frequent, and tied to behaviours the organisation actually wants — not just what's easiest to measure. And crucially, it's cooperative by default: nobody loses points because a colleague did well.</p>
       </div>
       <div class="sol-sidebar">
         <div>
           <span class="sol-sidebar-label">How it works in practice</span>
           <div class="sol-pill-group">
-            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Employees earn points for collaboration, knowledge sharing, and hitting team milestones</span></div>
-            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Points are visible to everyone, making contributions transparent across the organisation</span></div>
-            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Teams level up together and unlock shared perks, not individual prize money</span></div>
-            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Monthly challenges rotate to keep things fresh and prevent gaming the system</span></div>
-            <div class="sol-pill"><div class="sol-pill-dot"></div><span>No forced rankings. No zero-sum competition. Everyone can win if the team wins.</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Points for collaboration, knowledge-sharing, and team milestones</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Contributions are visible to everyone across the organisation</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Teams level up together and unlock shared perks — not cash prizes</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Monthly challenges rotate to keep things fresh and prevent gaming</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot"></div><span>No forced rankings. No zero-sum competition. Everyone can win.</span></div>
           </div>
         </div>
         <div class="sol-theory-link">
@@ -1053,20 +1054,19 @@
     </div>
     <div class="sol-body">
       <div class="sol-main">
-        <p>One hour a week. Everyone stops working and plays together. It sounds almost too simple, but the behavioural economics behind it is solid. Shared physical activity builds the kind of trust and familiarity that no team-building workshop on a Saturday ever quite manages — because it's regular, low-pressure, and genuinely fun.</p>
-        <p>The problem with most workplace relationships is that they're purely transactional. You only interact with colleagues when there's a task involved. That means your mental model of a coworker is built entirely on work outcomes: did they deliver, did they make your job harder, are they a rival or an ally? A weekly sports session breaks that frame entirely. You're just people playing a game together.</p>
-        <p>From a social preferences perspective, this matters a lot. Behavioural economists know that people treat those they have personal relationships with very differently from strangers. When you've played football with someone on a Thursday, you're more likely to share useful information with them on a Friday, more likely to flag a mistake before it becomes a problem, and more likely to assume good faith when something goes wrong.</p>
-        <p>The sports hour is also a nudge in disguise. It gets enrolled as a default slot in everyone's weekly calendar. You can opt out, but most people won't, because it's fun and social. Over time, the informal bonds it builds do real organisational work — reducing friction, increasing psychological safety, and making the whole environment one where cooperation feels natural rather than strategic.</p>
+        <p>One hour a week. Everyone stops working and plays together. It sounds simple, but the behavioural economics behind it is solid. Shared physical activity builds real trust — because it's regular, low-pressure, and fun in a way no Saturday workshop ever quite manages.</p>
+        <p>When you've only ever interacted with a colleague through tasks, your mental model of them is built on outcomes alone. A weekly sports session breaks that frame. You become people who played a game together — and research shows you'll share more information, catch each other's mistakes earlier, and assume good faith more readily.</p>
+        <p>It's also a nudge in disguise. The session is a default calendar slot. You can opt out, but most people won't. Over time, the informal bonds it builds reduce friction, increase psychological safety, and make cooperation feel natural rather than strategic.</p>
       </div>
       <div class="sol-sidebar">
         <div>
           <span class="sol-sidebar-label">Why it actually works</span>
           <div class="sol-pill-group">
-            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Regular shared activity builds genuine trust between colleagues across departments</span></div>
-            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Physical activity reduces stress and improves mood, which carries into the working day</span></div>
-            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>People help coworkers they know personally — sport creates that familiarity quickly</span></div>
-            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Default calendar slot means high participation without any mandate or pressure</span></div>
-            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Rotating sports and mixed teams each week prevent cliques from forming</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Shared activity builds genuine trust across departments</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Physical activity reduces stress and carries into the working day</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>People help coworkers they know personally — sport creates that fast</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Default calendar slot means high participation with no pressure</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Rotating sports and mixed teams each week prevent clique formation</span></div>
           </div>
         </div>
         <div class="sol-theory-link">
@@ -1087,8 +1087,11 @@
 <footer>
   <strong>The Incentive Paradox</strong>
   Case Study 6 · Organisational Economics · Behavioural Economics · Choice Architecture
-  <br/>Real-world reference: Microsoft Stack Ranking (2000s–2013) · Proposed Solutions: Gamification and Sports Hour
+  <br/>Real-world reference: Microsoft Stack Ranking (2000s–2013) · Solutions: Gamification and Sports Hour
 </footer>
+
+</div><!-- /newspaper-page -->
+</div><!-- /newspaper-wrapper -->
 
 <script>
   // ─── SCROLL REVEAL ───
@@ -1102,10 +1105,8 @@
 
   // ─── CHART ───
   const ctx = document.getElementById('mainChart').getContext('2d');
-
   const labels = ['Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8','Q9','Q10','Q11','Q12'];
 
-  // Phase background regions
   const phasePlugin = {
     id: 'phaseBackground',
     beforeDraw(chart) {
@@ -1125,7 +1126,6 @@
         ctx.fillRect(x0, chartArea.top, x1 - x0, chartArea.bottom - chartArea.top);
         ctx.restore();
       });
-      // Vertical dividers
       [3, 7].forEach(idx => {
         const x = xScale.getPixelForValue(idx);
         ctx.save();
