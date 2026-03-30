@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Incentive Paradox - Case Study 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1208;
+    --cream: #f5f0e8;
+    --cream-dark: #e8e0ce;
+    --rule: #2a1f0e;
+    --accent: #8b1a1a;
+    --muted: #5a4e3a;
+    --light-ink: #3d3222;
+    --gold: #b8860b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* ─── MASTHEAD ─── */
+  .masthead {
+    border-bottom: 4px double var(--rule);
+    padding: 0.5rem 0 0;
+    text-align: center;
+    background: var(--cream);
+  }
+
+  .edition-line {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .edition-line span { flex: 1; }
+  .edition-line span:nth-child(2) { text-align: center; }
+  .edition-line span:last-child { text-align: right; }
+
+  .masthead-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 8vw, 6rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    padding: 1rem 2rem 0.5rem;
+    color: var(--ink);
+  }
+
+  .masthead-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
+    color: var(--muted);
+    padding-bottom: 0.8rem;
+    letter-spacing: 0.03em;
+  }
+
+  .masthead-rule {
+    height: 3px;
+    background: var(--ink);
+    margin: 0;
+  }
+
+  /* ─── HERO SECTION ─── */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 2px 2fr;
+    gap: 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    border-bottom: 2px solid var(--rule);
+  }
+
+  .hero-kicker {
+    padding-right: 2rem;
+  }
+
+  .kicker-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .kicker-stat {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+  }
+
+  .kicker-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .kicker-divider {
+    margin: 1.2rem 0;
+    border: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  .col-rule {
+    background: var(--rule);
+    width: 2px;
+    margin: 0 2rem;
+  }
+
+  .hero-lead h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 1rem;
+    color: var(--ink);
+  }
+
+  .hero-lead p {
+    font-size: 0.95rem;
+    color: var(--light-ink);
+    margin-bottom: 0.8rem;
+  }
+
+  .drop-cap::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    font-weight: 900;
+    float: left;
+    line-height: 0.75;
+    margin: 0.1rem 0.15rem 0 0;
+    color: var(--accent);
+  }
+
+  /* ─── SECTION WRAPPERS ─── */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    border-bottom: 2px solid var(--rule);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.6rem;
+  }
+
+  .section-number {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* ─── CONCEPT CARDS ─── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0;
+    border: 2px solid var(--rule);
+  }
+
+  .card {
+    padding: 1.6rem 1.4rem;
+    border-right: 2px solid var(--rule);
+    position: relative;
+    transition: background 0.25s ease;
+    cursor: default;
+  }
+
+  .card:last-child { border-right: none; }
+
+  .card:hover {
+    background: var(--ink);
+    color: var(--cream);
+  }
+
+  .card:hover .card-number,
+  .card:hover .card-term { color: var(--cream-dark); }
+  .card:hover .card-body { color: #d4c9b0; }
+  .card:hover .card-tag { background: var(--accent); color: var(--cream); }
+
+  .card-number {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .card-term {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+
+  .card-body {
+    font-size: 0.82rem;
+    color: var(--light-ink);
+    line-height: 1.55;
+    margin-bottom: 1rem;
+  }
+
+  .card-tag {
+    display: inline-block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--cream-dark);
+    color: var(--muted);
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    transition: background 0.25s, color 0.25s;
+  }
+
+  /* ─── CHART SECTION ─── */
+  .chart-wrapper {
+    background: var(--ink);
+    border: 2px solid var(--rule);
+    padding: 2rem;
+    position: relative;
+  }
+
+  .chart-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 0.3rem;
+  }
+
+  .chart-deck {
+    font-size: 0.8rem;
+    color: #a89880;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 320px;
+  }
+
+  .phase-labels {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1rem;
+  }
+
+  .phase-label {
+    text-align: center;
+    flex: 1;
+  }
+
+  .phase-label-text {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #a89880;
+  }
+
+  .phase-label-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--cream);
+  }
+
+  /* ─── BEFORE / AFTER ─── */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 2px solid var(--rule);
+    gap: 0;
+  }
+
+  .ba-col {
+    padding: 1.8rem 1.6rem;
+  }
+
+  .ba-col:first-child {
+    border-right: 2px solid var(--rule);
+    background: var(--cream-dark);
+  }
+
+  .ba-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .ba-label.before { color: var(--accent); }
+  .ba-label.after { color: #2d6a2d; }
+
+  .ba-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.3;
+  }
+
+  .ba-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+
+  .ba-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .ba-list li {
+    font-size: 0.85rem;
+    color: var(--light-ink);
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    line-height: 1.45;
+  }
+
+  .ba-list li::before {
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+    font-size: 0.8rem;
+  }
+
+  .before .ba-list li::before { content: '✕'; color: var(--accent); }
+  .after .ba-list li::before { content: '✓'; color: #2d6a2d; }
+
+  /* ─── IMPLICATIONS ─── */
+  .implications-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .impl-block h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+  }
+
+  .impl-block p {
+    font-size: 0.88rem;
+    color: var(--light-ink);
+    line-height: 1.65;
+  }
+
+  .pull-quote {
+    grid-column: 1 / -1;
+    border-top: 3px solid var(--rule);
+    border-bottom: 3px solid var(--rule);
+    padding: 1.5rem 0;
+    text-align: center;
+    margin: 0.5rem 0;
+  }
+
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.4;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .pull-quote cite {
+    display: block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.8rem;
+    font-style: normal;
+  }
+
+  /* ─── SOLUTION SECTION ─── */
+  .solution-intro {
+    font-size: 0.92rem;
+    color: var(--light-ink);
+    line-height: 1.7;
+    max-width: 720px;
+    margin-bottom: 2.5rem;
+  }
+
+  .solution-block {
+    border: 2px solid var(--rule);
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .solution-block:last-child { margin-bottom: 0; }
+
+  .sol-header {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.1rem 1.6rem;
+    background: var(--ink);
+    border-bottom: 2px solid var(--rule);
+  }
+
+  .sol-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .sol-header-text {}
+
+  .sol-eyebrow {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #a89880;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .sol-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+
+  .sol-body {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 0;
+  }
+
+  .sol-main {
+    padding: 1.6rem;
+    border-right: 2px solid var(--rule);
+  }
+
+  .sol-main p {
+    font-size: 0.88rem;
+    color: var(--light-ink);
+    line-height: 1.65;
+    margin-bottom: 0.8rem;
+  }
+
+  .sol-main p:last-child { margin-bottom: 0; }
+
+  .sol-sidebar {
+    padding: 1.6rem;
+    background: var(--cream-dark);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sol-sidebar-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  .sol-pill-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .sol-pill {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    font-size: 0.82rem;
+    color: var(--light-ink);
+    line-height: 1.4;
+  }
+
+  .sol-pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 0.35rem;
+  }
+
+  .sol-pill-dot.green { background: #2d6a2d; }
+
+  .sol-theory-link {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .sol-theory-link-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .sol-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .sol-tag {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    background: var(--ink);
+    color: var(--cream-dark);
+  }
+
+  @media (max-width: 700px) {
+    .sol-body { grid-template-columns: 1fr; }
+    .sol-main { border-right: none; border-bottom: 2px solid var(--rule); }
+  }
+
+  /* ─── REAL WORLD SECTION ─── */
+  .realworld-wrapper {
+    border: 2px solid var(--rule);
+    overflow: hidden;
+  }
+
+  .realworld-banner {
+    background: var(--ink);
+    padding: 1rem 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    border-bottom: 2px solid var(--rule);
+  }
+
+  .realworld-eyebrow {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .realworld-company {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--cream);
+    letter-spacing: -0.01em;
+  }
+
+  .realworld-years {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #a89880;
+    letter-spacing: 0.1em;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .realworld-body {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 0;
+  }
+
+  .rw-col {
+    padding: 1.8rem 1.6rem;
+  }
+
+  .rw-col:last-child {
+    background: var(--cream-dark);
+  }
+
+  .rw-divider {
+    background: var(--rule);
+  }
+
+  .rw-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  .rw-label.green { color: #2d6a2d; }
+
+  .rw-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .rw-body {
+    font-size: 0.85rem;
+    color: var(--light-ink);
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
+  }
+
+  .rw-quote {
+    border-left: 3px solid var(--accent);
+    padding-left: 0.9rem;
+    margin: 1rem 0;
+    font-style: italic;
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .rw-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1rem;
+  }
+
+  .rw-tag {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    background: var(--ink);
+    color: var(--cream-dark);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--ink);
+    color: var(--cream-dark);
+    text-align: center;
+    padding: 2rem;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  footer strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    font-style: italic;
+    color: var(--cream);
+  }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 700px) {
+    .hero { grid-template-columns: 1fr; }
+    .col-rule { display: none; }
+    .hero-kicker { padding-right: 0; margin-bottom: 1.5rem; }
+    .cards-grid { grid-template-columns: 1fr 1fr; }
+    .card { border-bottom: 2px solid var(--rule); }
+    .before-after { grid-template-columns: 1fr; }
+    .ba-col:first-child { border-right: none; border-bottom: 2px solid var(--rule); }
+    .implications-grid { grid-template-columns: 1fr; }
+    .realworld-body { grid-template-columns: 1fr; }
+    .rw-divider { display: none; }
+    .edition-line span:first-child,
+    .edition-line span:last-child { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── MASTHEAD ─── -->
+<header class="masthead">
+  <div class="edition-line">
+    <span>Organizational Economics</span>
+    <span>★ ★ ★</span>
+    <span>Case Study VI · Public Sector</span>
+  </div>
+  <h1 class="masthead-title">The Incentive Paradox</h1>
+  <p class="masthead-sub">When paying more got less done, and what behavioural science did about it</p>
+  <div class="masthead-rule"></div>
+</header>
+
+<!-- ─── HERO ─── -->
+<div class="hero reveal">
+  <div class="hero-kicker">
+    <span class="kicker-label">By the numbers</span>
+    <div class="kicker-stat">3</div>
+    <div class="kicker-desc">Distinct phases of organisational change</div>
+    <hr class="kicker-divider"/>
+    <div class="kicker-stat">4</div>
+    <div class="kicker-desc">Core economic concepts at play</div>
+    <hr class="kicker-divider"/>
+    <div class="kicker-stat" style="color:var(--accent)">↑↓</div>
+    <div class="kicker-desc">Productivity went up. Then cooperation fell apart.</div>
+  </div>
+  <div class="col-rule"></div>
+  <div class="hero-lead">
+    <h2>A government agency rewarded individual output. Output went up. Then everything else went down.</h2>
+    <p class="drop-cap">A public-sector org rolled out performance-based pay. It worked at first. Then people stopped helping each other, started hoarding info, and morale tanked. Turns out money isn't the whole story — people also care about fairness, colleagues, and whether their work actually means something.</p>
+  </div>
+</div>
+
+<!-- ─── CONCEPT CARDS ─── -->
+<section class="section reveal reveal-delay-1">
+  <div class="section-header">
+    <span class="section-number">§ I · Theory</span>
+    <h2 class="section-title">Four Ideas That Explain Everything</h2>
+  </div>
+  <div class="cards-grid">
+    <div class="card">
+      <span class="card-number">01 · Economics</span>
+      <div class="card-term">Principal-Agent Theory</div>
+      <p class="card-body">Bosses and employees want different things. Financial incentives try to bridge that gap. On paper, clean and logical. In practice, complicated fast.</p>
+      <span class="card-tag">Traditional Economics</span>
+    </div>
+    <div class="card">
+      <span class="card-number">02 · Psychology</span>
+      <div class="card-term">The Crowding-Out Effect</div>
+      <p class="card-body">Big external rewards can kill internal ones. Once people work just for the bonus, they stop working because they care. Loyalty and teamwork quietly disappear.</p>
+      <span class="card-tag">Behavioural Economics</span>
+    </div>
+    <div class="card">
+      <span class="card-number">03 · Sociology</span>
+      <div class="card-term">Social Preferences</div>
+      <p class="card-body">People aren't just walking calculators. Fairness, belonging, and wanting to help a teammate are real motivators. Team bonuses tap into that rather than making colleagues compete.</p>
+      <span class="card-tag">Behavioural Economics</span>
+    </div>
+    <div class="card">
+      <span class="card-number">04 · Design</span>
+      <div class="card-term">Choice Architecture and Nudging</div>
+      <p class="card-body">How you present a choice changes what people pick. Enrolling employees in training by default (opt-out, not opt-in) quietly boosts participation without forcing anyone.</p>
+      <span class="card-tag">Thaler and Sunstein</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CHART ─── -->
+<section class="section reveal reveal-delay-2">
+  <div class="section-header">
+    <span class="section-number">§ II · Evidence</span>
+    <h2 class="section-title">What Actually Happened Across Three Phases</h2>
+  </div>
+  <div class="chart-wrapper">
+    <div class="chart-headline">Productivity, Cooperation and Morale Over Time</div>
+    <div class="chart-deck">A rough picture of how things played out across three policy phases. Hover over the lines to see details.</div>
+    <div class="chart-container">
+      <canvas id="mainChart"></canvas>
+    </div>
+    <div class="phase-labels">
+      <div class="phase-label">
+        <div class="phase-label-text">Phase I</div>
+        <div class="phase-label-title">Individual Bonuses Kick In</div>
+      </div>
+      <div class="phase-label">
+        <div class="phase-label-text">Phase II</div>
+        <div class="phase-label-title">Teamwork Falls Apart</div>
+      </div>
+      <div class="phase-label">
+        <div class="phase-label-text">Phase III</div>
+        <div class="phase-label-title">Things Start Getting Better</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── BEFORE / AFTER ─── -->
+<section class="section reveal reveal-delay-3">
+  <div class="section-header">
+    <span class="section-number">§ III · Comparison</span>
+    <h2 class="section-title">Before and After the Behavioural Fix</h2>
+  </div>
+  <div class="before-after">
+    <div class="ba-col before">
+      <div class="ba-label before">Before · The Individual Pay Model</div>
+      <div class="ba-title">How the Competitive Trap Set In</div>
+      <ul class="ba-list before">
+        <li>Rewards tied solely to individual output</li>
+        <li>Sharing info with colleagues just helped your competition</li>
+        <li>The joy of good work got replaced by chasing the payout</li>
+        <li>Trust eroded, and that's really hard to get back</li>
+      </ul>
+    </div>
+    <div class="ba-col after">
+      <div class="ba-label after">After · The Behavioural Intervention</div>
+      <div class="ba-title">How Things Got Back on Track</div>
+      <ul class="ba-list after">
+        <li>Team bonuses made your win and your colleague's win the same thing</li>
+        <li>People started looking out for each other again, naturally</li>
+        <li>Training was the default, so most people just did it</li>
+        <li>Morale crept back as the workplace felt worth caring about again</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── IMPLICATIONS ─── -->
+<section class="section reveal reveal-delay-4">
+  <div class="section-header">
+    <span class="section-number">§ IV · Governance and Welfare</span>
+    <h2 class="section-title">So What Does This Actually Mean?</h2>
+  </div>
+  <div class="implications-grid">
+    <div class="impl-block">
+      <h3>People's Wellbeing</h3>
+      <p>Systems that only track output slowly eat away at the parts of work that make it worth doing. When trust goes, you get turnover, sick days, and work that technically gets done but stops being any good.</p>
+    </div>
+    <div class="impl-block">
+      <h3>Governance</h3>
+      <p>Nudge tools like smart defaults can improve both efficiency and wellbeing at once. And unlike mandates, they don't take away anyone's freedom to choose differently, which makes them easier to defend.</p>
+    </div>
+    <div class="pull-quote">
+      <p>"The question is never whether to architect the choice environment. It already is. The question is whether to do it thoughtfully."</p>
+      <cite>Thaler and Sunstein, Nudge (2008)</cite>
+    </div>
+    <div class="impl-block">
+      <h3>People Don't Think Like Economists</h3>
+      <p>Most employees go with the default, copy colleagues, and follow their gut. Designing systems that assume everyone is a perfectly rational agent will keep producing surprises.</p>
+    </div>
+    <div class="impl-block">
+      <h3>The Best Approach Uses Both</h3>
+      <p>Financial incentives plus behavioural design. Clear structures give direction; smart defaults make cooperation the easier option. The goal isn't to trick anyone. It's just to make the good choice easy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── REAL WORLD: MICROSOFT ─── -->
+<section class="section reveal">
+  <div class="section-header">
+    <span class="section-number">§ V · Real World</span>
+    <h2 class="section-title">This Actually Happened. At Microsoft.</h2>
+  </div>
+  <div class="realworld-wrapper">
+    <div class="realworld-banner">
+      <div>
+        <div class="realworld-eyebrow">Big Tech Case</div>
+        <div class="realworld-company">Microsoft</div>
+      </div>
+      <div class="realworld-years">Stack Ranking Era · Early 2000s to 2013</div>
+    </div>
+    <div class="realworld-body">
+      <div class="rw-col">
+        <span class="rw-label">What went wrong</span>
+        <div class="rw-heading">The system that turned teammates into rivals</div>
+        <p class="rw-body">For over a decade, Microsoft ran a "stack ranking" system. Every team had to rank its members on a bell curve: top 20%, middle 70%, bottom 10%. The bottom group faced demotion or firing, regardless of their actual performance. Sounds rigorous, right?</p>
+        <p class="rw-body">It was a disaster. Since only a fixed number of people could be top-ranked, working alongside a talented colleague became a threat, not an asset. People started hoarding information and avoiding high-performers so they wouldn't look worse by comparison.</p>
+        <div class="rw-quote">
+          "People responsible for features will openly sabotage other people's efforts. One of the most valuable things I learned was to give the appearance of being courteous while withholding just enough information from colleagues to ensure they didn't get ahead of me."
+          <br/><small>Former Microsoft developer, Vanity Fair</small>
+        </div>
+        <div class="rw-tag-row">
+          <span class="rw-tag">Crowding-Out Effect</span>
+          <span class="rw-tag">Zero-Sum Competition</span>
+          <span class="rw-tag">Social Preferences Destroyed</span>
+        </div>
+      </div>
+      <div class="rw-divider"></div>
+      <div class="rw-col">
+        <span class="rw-label green">What they did about it</span>
+        <div class="rw-heading">Satya Nadella scrapped it and built something very different</div>
+        <p class="rw-body">In 2013, Microsoft abolished stack ranking entirely. Under new CEO Satya Nadella, the company shifted to continuous feedback, team-based goals, and a culture built around a "growth mindset." No more forced curves, no more rank-and-yank.</p>
+        <p class="rw-body">The turnaround is remarkable. Employee satisfaction jumped from a Glassdoor score of 3.7 in 2013 to 4.4 by 2023. Microsoft Azure became a cloud giant. Innovation returned. The company went from a "lost decade" to a multi-trillion dollar resurgence.</p>
+        <p class="rw-body">It's a near-perfect real-world version of the case study: individual incentives crushed cooperation, and switching to collaborative structures brought it back.</p>
+        <div class="rw-tag-row">
+          <span class="rw-tag">Team-Based Goals</span>
+          <span class="rw-tag">Continuous Feedback</span>
+          <span class="rw-tag">Choice Architecture</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SOLUTION ─── -->
+<section class="section reveal">
+  <div class="section-header">
+    <span class="section-number">§ VI · Proposed Solutions</span>
+    <h2 class="section-title">Two Ideas That Could Actually Fix This</h2>
+  </div>
+  <p class="solution-intro">So now we know what goes wrong and why. The real question is: what do you actually do about it? Here are two practical solutions that go beyond tweaking the bonus structure and address the root problem — that people need to feel like they're part of something, not just competing within it.</p>
+
+  <!-- SOLUTION 1: GAMIFICATION -->
+  <div class="solution-block">
+    <div class="sol-header">
+      <div class="sol-number">01</div>
+      <div class="sol-header-text">
+        <span class="sol-eyebrow">Solution One</span>
+        <div class="sol-title">A Game-Based Work System</div>
+      </div>
+    </div>
+    <div class="sol-body">
+      <div class="sol-main">
+        <p>The idea here is simple: take the things that make games fun — points, levels, challenges, team quests — and wire them into how everyday work gets recognised. Not to make work feel like a video game, but to make effort visible, collaboration rewarded, and progress something people can actually see and feel.</p>
+        <p>In a traditional incentive system, if you quietly help a colleague solve a problem, nobody tracks that. It doesn't show up in your review. In a game-based system, it does. You earn points for sharing knowledge, mentoring a new joiner, or finishing a cross-team project. Teams accumulate points together and unlock shared rewards — an extra day off, a team lunch, priority on new projects.</p>
+        <p>The key difference from regular bonuses is that the rewards are transparent, frequent, and tied to behaviours the organisation actually wants — not just the output that's easiest to measure. It also taps into something behavioural economics knows well: people respond to immediate, visible feedback far more than to an annual review that feels abstract and far away.</p>
+        <p>Crucially, the scoring system is designed around team contributions, not individual rankings. There's no bell curve. Nobody loses points because a colleague did well. The game is designed to be cooperative by default, which is exactly the kind of choice architecture Thaler and Sunstein would approve of.</p>
+      </div>
+      <div class="sol-sidebar">
+        <div>
+          <span class="sol-sidebar-label">How it works in practice</span>
+          <div class="sol-pill-group">
+            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Employees earn points for collaboration, knowledge sharing, and hitting team milestones</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Points are visible to everyone, making contributions transparent across the organisation</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Teams level up together and unlock shared perks, not individual prize money</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot"></div><span>Monthly challenges rotate to keep things fresh and prevent gaming the system</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot"></div><span>No forced rankings. No zero-sum competition. Everyone can win if the team wins.</span></div>
+          </div>
+        </div>
+        <div class="sol-theory-link">
+          <span class="sol-theory-link-label">Grounded in</span>
+          <div class="sol-tags">
+            <span class="sol-tag">Social Preferences</span>
+            <span class="sol-tag">Choice Architecture</span>
+            <span class="sol-tag">Crowding-Out Fix</span>
+            <span class="sol-tag">Intrinsic Motivation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLUTION 2: SPORTS HOUR -->
+  <div class="solution-block">
+    <div class="sol-header">
+      <div class="sol-number">02</div>
+      <div class="sol-header-text">
+        <span class="sol-eyebrow">Solution Two</span>
+        <div class="sol-title">A Weekly Sports Hour for Team Building</div>
+      </div>
+    </div>
+    <div class="sol-body">
+      <div class="sol-main">
+        <p>One hour a week. Everyone stops working and plays together. It sounds almost too simple, but the behavioural economics behind it is solid. Shared physical activity builds the kind of trust and familiarity that no team-building workshop on a Saturday ever quite manages — because it's regular, low-pressure, and genuinely fun.</p>
+        <p>The problem with most workplace relationships is that they're purely transactional. You only interact with colleagues when there's a task involved. That means your mental model of a coworker is built entirely on work outcomes: did they deliver, did they make your job harder, are they a rival or an ally? A weekly sports session breaks that frame entirely. You're just people playing a game together.</p>
+        <p>From a social preferences perspective, this matters a lot. Behavioural economists know that people treat those they have personal relationships with very differently from strangers. When you've played football with someone on a Thursday, you're more likely to share useful information with them on a Friday, more likely to flag a mistake before it becomes a problem, and more likely to assume good faith when something goes wrong.</p>
+        <p>The sports hour is also a nudge in disguise. It gets enrolled as a default slot in everyone's weekly calendar. You can opt out, but most people won't, because it's fun and social. Over time, the informal bonds it builds do real organisational work — reducing friction, increasing psychological safety, and making the whole environment one where cooperation feels natural rather than strategic.</p>
+      </div>
+      <div class="sol-sidebar">
+        <div>
+          <span class="sol-sidebar-label">Why it actually works</span>
+          <div class="sol-pill-group">
+            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Regular shared activity builds genuine trust between colleagues across departments</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Physical activity reduces stress and improves mood, which carries into the working day</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>People help coworkers they know personally — sport creates that familiarity quickly</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Default calendar slot means high participation without any mandate or pressure</span></div>
+            <div class="sol-pill"><div class="sol-pill-dot green"></div><span>Rotating sports and mixed teams each week prevent cliques from forming</span></div>
+          </div>
+        </div>
+        <div class="sol-theory-link">
+          <span class="sol-theory-link-label">Grounded in</span>
+          <div class="sol-tags">
+            <span class="sol-tag">Social Preferences</span>
+            <span class="sol-tag">Nudge Theory</span>
+            <span class="sol-tag">Status Quo Bias</span>
+            <span class="sol-tag">Reciprocity</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <strong>The Incentive Paradox</strong>
+  Case Study 6 · Organisational Economics · Behavioural Economics · Choice Architecture
+  <br/>Real-world reference: Microsoft Stack Ranking (2000s–2013) · Proposed Solutions: Gamification and Sports Hour
+</footer>
+
+<script>
+  // ─── SCROLL REVEAL ───
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+
+  // ─── CHART ───
+  const ctx = document.getElementById('mainChart').getContext('2d');
+
+  const labels = ['Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8','Q9','Q10','Q11','Q12'];
+
+  // Phase background regions
+  const phasePlugin = {
+    id: 'phaseBackground',
+    beforeDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      if (!chartArea) return;
+      const xScale = scales.x;
+      const regions = [
+        { start: 0, end: 3, color: 'rgba(139,26,26,0.07)' },
+        { start: 3, end: 7, color: 'rgba(26,18,8,0.12)' },
+        { start: 7, end: 11, color: 'rgba(45,106,45,0.07)' },
+      ];
+      regions.forEach(r => {
+        const x0 = xScale.getPixelForValue(r.start);
+        const x1 = xScale.getPixelForValue(r.end);
+        ctx.save();
+        ctx.fillStyle = r.color;
+        ctx.fillRect(x0, chartArea.top, x1 - x0, chartArea.bottom - chartArea.top);
+        ctx.restore();
+      });
+      // Vertical dividers
+      [3, 7].forEach(idx => {
+        const x = xScale.getPixelForValue(idx);
+        ctx.save();
+        ctx.strokeStyle = 'rgba(245,240,232,0.25)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+        ctx.restore();
+      });
+    }
+  };
+
+  new Chart(ctx, {
+    type: 'line',
+    plugins: [phasePlugin],
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Individual Productivity',
+          data: [50, 62, 75, 82, 80, 74, 65, 60, 63, 70, 76, 82],
+          borderColor: '#d4a853',
+          backgroundColor: 'rgba(212,168,83,0.08)',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointBackgroundColor: '#d4a853',
+          tension: 0.4,
+          fill: false,
+        },
+        {
+          label: 'Team Cooperation',
+          data: [70, 66, 60, 50, 38, 30, 28, 35, 45, 58, 67, 74],
+          borderColor: '#7eb8a4',
+          backgroundColor: 'rgba(126,184,164,0.08)',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointBackgroundColor: '#7eb8a4',
+          tension: 0.4,
+          fill: false,
+        },
+        {
+          label: 'Employee Morale',
+          data: [72, 68, 62, 54, 42, 36, 33, 40, 50, 60, 68, 75],
+          borderColor: '#c47eb8',
+          backgroundColor: 'rgba(196,126,184,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#c47eb8',
+          tension: 0.4,
+          fill: false,
+          borderDash: [5, 3],
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 1500, easing: 'easeInOutQuart' },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          labels: {
+            color: '#d4c9b0',
+            font: { family: "'Source Sans 3', sans-serif", size: 11, weight: '600' },
+            boxWidth: 20,
+            padding: 16,
+          }
+        },
+        tooltip: {
+          backgroundColor: '#1a1208',
+          titleColor: '#f5f0e8',
+          bodyColor: '#a89880',
+          borderColor: '#3d3222',
+          borderWidth: 1,
+          padding: 12,
+          titleFont: { family: "'Playfair Display', serif", size: 13 },
+          bodyFont: { family: "'Source Sans 3', sans-serif", size: 11 },
+          callbacks: {
+            label: (ctx) => `  ${ctx.dataset.label}: ${ctx.parsed.y}/100`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#a89880', font: { family: "'Source Sans 3', sans-serif", size: 10 } },
+          grid: { color: 'rgba(245,240,232,0.08)' },
+          border: { color: 'rgba(245,240,232,0.2)' }
+        },
+        y: {
+          min: 20,
+          max: 100,
+          ticks: {
+            color: '#a89880',
+            font: { family: "'Source Sans 3', sans-serif", size: 10 },
+            callback: v => v
+          },
+          grid: { color: 'rgba(245,240,232,0.08)' },
+          border: { color: 'rgba(245,240,232,0.2)' }
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>
