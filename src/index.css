@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 33% 94%;
+    --foreground: 36 30% 8%;
+
+    --card: 40 33% 94%;
+    --card-foreground: 36 30% 8%;
+
+    --popover: 40 33% 94%;
+    --popover-foreground: 36 30% 8%;
+
+    --primary: 36 30% 8%;
+    --primary-foreground: 40 33% 94%;
+
+    --secondary: 38 22% 86%;
+    --secondary-foreground: 36 30% 8%;
+
+    --muted: 38 22% 86%;
+    --muted-foreground: 36 14% 36%;
+
+    --accent: 0 68% 32%;
+    --accent-foreground: 40 33% 94%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 30 50% 12%;
+    --input: 30 50% 12%;
+    --ring: 36 30% 8%;
+
+    --radius: 0px;
+
+    /* Custom newspaper tokens */
+    --ink: 36 30% 8%;
+    --cream: 40 33% 94%;
+    --cream-dark: 38 22% 86%;
+    --rule: 30 50% 12%;
+    --newspaper-accent: 0 68% 32%;
+    --newspaper-muted: 36 14% 36%;
+    --light-ink: 34 18% 18%;
+    --gold: 38 85% 38%;
+    --green: 120 40% 30%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-primary text-foreground;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+}
+
+/* ─── NOISE TEXTURE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.5;
+}
+
+/* ─── TYPOGRAPHY UTILITIES ─── */
+@layer components {
+  .font-display {
+    font-family: 'Playfair Display', serif;
+  }
+
+  .font-sans-display {
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  .font-body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+  }
+
+  .drop-cap::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    font-weight: 900;
+    float: left;
+    line-height: 0.75;
+    margin: 0.1rem 0.15rem 0 0;
+    color: hsl(var(--newspaper-accent));
+  }
+
+  .kicker-label {
+    @apply font-sans-display text-[0.65rem] font-semibold tracking-[0.2em] uppercase text-accent;
+  }
+
+  .section-number-label {
+    @apply font-sans-display text-[0.65rem] font-semibold tracking-[0.2em] uppercase text-accent whitespace-nowrap;
+  }
+
+  .newspaper-tag {
+    @apply font-sans-display text-[0.6rem] font-semibold tracking-[0.1em] uppercase px-2 py-0.5 rounded-sm bg-primary text-secondary;
+  }
+
+  .col-rule {
+    @apply bg-border;
+    width: 2px;
+    margin: 0 2rem;
+  }
+}
+
+/* ─── NEWSPAPER FOLD ANIMATION ─── */
+@keyframes unfoldNewspaper {
+  0% {
+    transform: rotateX(-90deg) scaleY(0.4);
+    opacity: 0;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+  }
+  40% { opacity: 1; }
+  70% {
+    transform: rotateX(4deg) scaleY(1.01);
+    box-shadow: 0 60px 120px rgba(0,0,0,0.5);
+  }
+  85% { transform: rotateX(-1.5deg) scaleY(1); }
+  100% {
+    transform: rotateX(0deg) scaleY(1);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+}
+
+@keyframes creasefade {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.newspaper-wrapper {
+  perspective: 2200px;
+  perspective-origin: 50% 40%;
+}
+
+.newspaper-page {
+  background: hsl(var(--cream));
+  transform-origin: top center;
+  animation: unfoldNewspaper 1.6s cubic-bezier(0.23, 1, 0.32, 1) 0.3s both;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.newspaper-page::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.18), transparent);
+  animation: creasefade 2.2s ease forwards;
+  pointer-events: none;
+  z-index: 10;
+}
